@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { Draggable } from "react-beautiful-dnd";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -12,7 +12,11 @@ const getItems = (count) =>
   }));
 
 /* 並び替え */
-const reorder = (list, statIndex, endIndex) => {};
+const reorder = (list, startIndex, endIndex) => {
+  const removed = list.splice(startIndex, 1); //ドラッグ開始要素の削除
+  console.log(removed);
+  list.splice(endIndex, 0, removed[0]); //ドロップした箇所に挿入
+};
 
 /* スタイル */
 const grid = 8;
@@ -35,10 +39,12 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 function App() {
   const [items] = useState(getItems(10));
   // useEffect(() => {
-  //   console.log(items);
+  //   // console.log(items);
+  //   const [test] = getItems(5);
+  //   console.log(test);
   // }, []);
   const onDragEnd = (result) => {
-    console.log(result);
+    // console.log(result);
     if (!result.destination) {
       return;
     }
@@ -46,8 +52,8 @@ function App() {
   };
 
   return (
-    <DragDropContext>
-      <Droppable droppableId="droppable" onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <div
             {...provided.droppableProps}
